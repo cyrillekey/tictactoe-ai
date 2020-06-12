@@ -324,16 +324,36 @@ class tictac {
             }
         
     public static void main(String[] args) {
-        int x=0;
-     
-        try{
-            System.out.println("starting a new game");
-           playgame();
-        }catch(Exception e){
-            System.out.println("An error occured try again");
-            playgame();
+        System.out.print("Which mode are you playing 1:play against cpu /n 2.Play against human");
+        Scanner input=new Scanner(System.in);
+        int x=input.nextInt();
+        switch(x){
+            case 1:
+            try{
+                System.out.println("starting a new game");
+               playgame();
+            }catch(Exception e){
+                System.out.println("An error occured try again");
+                playgame();
+    
+            }
+            break;
+            case 2:
+            try{
+                System.out.println("starting a new game");
+               multiplayer();
+            }catch(Exception e){
+                System.out.println("An error occured try again");
+                multiplayer();
+    
+            }
+            default:
+            System.out.println("You did not choose anything");
+            break;
 
+            
         }
+        
         
     }
 }
