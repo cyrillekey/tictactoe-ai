@@ -64,22 +64,19 @@ class createboard {
 
     void placeO( int x) {
         try{
-        System.out.println("Cpu plays");
+       // System.out.println("Cpu plays");
         int row = (int) (x / 3);
         int column = x % 3;
 
         if (board[row][column] == ".") {
             board[row][column] = "O";
             layout[row][column]="O";
-        } else if (board[row][column] == "X" || board[row][column] == "O") {
-            System.out.println("Place is occupied");
-            placeO(aiplayer());
-        } else {
+        }else {
             System.out.println("Number not in board");
         }}
         catch(IndexOutOfBoundsException e){
             System.out.println("Number does not reside on board");
-            placeO(aiplayer());
+            placeO(findbestMove(board));
         }
 
     }
@@ -90,7 +87,7 @@ class createboard {
         // if won status =1 if still playing status =0
         if (board[0][0] == board[0][1] && board[0][0] == board[0][2]) {
             win = board[0][0];
-        } else if (board[1][0] == board[1][1] && board[1][2] == board[1][0]) {
+        } else if (board[1][0] == board[1][1] && board[1][0] == board[1][2]) {
             win = board[1][0];
         } else if (board[2][0] == board[2][1] && board[2][0] == board[2][2]) {
             win = board[2][0];
@@ -107,27 +104,14 @@ class createboard {
         }
 
         if (win == "X") {
-            System.out.println("Player One wins");
-            status = 1;
+           // System.out.println("Player One wins");
+            status = -1;
         } else if (win == "O") {
-            System.out.println("Cpu wins");
+            //System.out.println("Cpu wins");
             status = 1;
         }
         return status;
     }
-/*
-    String[] createmixed() {
-        int incre = 0;
-        String[] merged = {};
-        for (int x = 0; x < 3; x++) {
-            for (int i = 0; i < board.length; i++) {
-                merged[incre] = board[x][i];
-                incre++;
-            }
-        }
-        return merged;
-    }
-*/
     boolean fullgame() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -137,7 +121,7 @@ class createboard {
             }
         }
         return true;
-    }
+    }/*
     int aiplayer(){
         int incre = 0;
         String[] merged=new String[9];
@@ -160,49 +144,128 @@ class createboard {
         int randomnumber=generator.nextInt(remaining.length);
         
         return remaining[randomnumber];
-    }
+    }*/
+
+int minimax(String x[][],int depth,boolean isMax){
+    int score=checkboard();
     
+    if(score==1){
+        //cpu has won the game
+        
+        return score;
+    }
+    if(score==-1){
+        //player has won the game
+        return score;
+    }
+    if(fullgame()){
+        return score;
+    }
+    //if its maximizers tun
+    if(isMax){
+        int best=-1000;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j <3; j++) {
+               if(x[i][j]=="."){
+                   
+                   x[i][j]="O";
+                   best=Math.max(best,minimax(x, depth+1, !isMax));
+                   x[i][j]=".";
+               } 
+            }
+        }
+        return best;
+    }else{
+        int best=1000;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j <3; j++) {
+                if(x[i][j]=="."){
+                    x[i][j]="X";
+                    best=Math.min(best, minimax(x, depth+1, !isMax));
+                    x[i][j]=".";
+                }
+            }
+        }
+        return best;
+    }
+}
+int findbestMove(String[][] x){
+    int bestVal=-1000;
+    int play=0;
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if(x[i][j]=="."){
+               x[i][j]="O";
+                int moveval=minimax(x, 0, false);
+                x[i][j]=".";
+                if(moveval>bestVal){
+                    bestVal=moveval;
+                     play=i*3+j;
+                }
+            }
+        }
+    }
+    return play;
+}
 
 
 }
 
 class tictac {
-    public static void main(String[] args) {
+    static void playgame(){
         createboard one = new createboard();
         one.insertNumbers();
-        
+        int check=0;
         while (true) {
-            try {
                 one.printposition();
                 one.placex();
-                int check = one.checkboard();
+                check = one.checkboard();
                 if (check == 1) {
+                    System.out.println("Cpu wins");
                     one.printposition();
                     break;
                 }
-                if (one.fullgame()) {
+                else if(check==-1){
+                    System.out.println("Player wins");
+                    one.printposition();
+                    break;
+                }
+                else if (one.fullgame()) {
                     System.out.println("Game tied!");
                     one.printposition();
                     break;
                 }
                // one.printposition();
-                one.placeO(one.aiplayer());
-                int check2 = one.checkboard();
-                if (check2 == 1) {
+                one.placeO(one.findbestMove(one.board));
+                 check = one.checkboard();
+                if (check == 1) {
+                    System.out.println("Cpu wins");
                     one.printposition();
                     break;
                 }
-                if (one.fullgame()) {
+                else if(check==-1){
+                    System.out.println("Player wins");
+                    one.printposition();
+                    break;
+                }
+                else if (one.fullgame()) {
                     System.out.println("Game is tied!");
                     one.printposition();
                     break;
                 }
-            } catch (Exception e) {
-                System.out.println("Error occured");
-                break;
+            } 
             }
-        }
         
+    public static void main(String[] args) {
+       
+        try{
+            playgame();
+        }catch(Exception e){
+            System.out.println("An error occured try again");
+            playgame();
+
+        }
+      
         
     }
 }
