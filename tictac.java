@@ -1,6 +1,6 @@
 
 //import java.util.Scanner;
-import java.util.*;
+import java.util.Scanner;
 
 class createboard {
     Scanner input = new Scanner(System.in);
@@ -41,6 +41,7 @@ class createboard {
         }
 
     }
+    //Funtion that places the Humans X on the board
 
     void placex() {
         try {
@@ -63,7 +64,7 @@ class createboard {
         }
 
     }
-    // ai that will play as x
+    //Funtion that the ai plays O on the board
 
     void placeO(final int x) {
         try {
@@ -83,8 +84,8 @@ class createboard {
         }
 
     }
-
-    void place1O() {
+    //incase of multiplayer method to place O on the board
+    void humanpalyer() {
         try {
             System.out.println("Player two enter choice ?");
             final int x = input.nextInt();
@@ -95,17 +96,17 @@ class createboard {
                 layout[row][column] = "O";
             } else if (board[row][column] == "X" || board[row][column] == "O") {
                 // System.out.println("Place is occupied");
-                place1O();
+                humanpalyer();
             } else {
                 System.out.println("Number not in board");
             }
         } catch (final IndexOutOfBoundsException e) {
             System.out.println("number enterd is not o board");
-            place1O();
+           humanpalyer();
         }
 
     }
-
+//check diaganols,rows and column for winner.return 1 if cpu wins and negative if cpu loses
     int checkboard() {
         String win = "";
         int status = 0;
@@ -133,6 +134,7 @@ class createboard {
                 }
             }
         }
+        //check diaganols for winner
         if (board[0][2] == board[1][1] && board[1][1] == board[2][0]) {
             win = board[0][2];
             if (win == "X") {
@@ -151,7 +153,7 @@ class createboard {
         }
         return status;
     }
-
+    //check if no moves are available therefore game is a draw
     boolean fullgame() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
@@ -162,7 +164,7 @@ class createboard {
         }
         return true;
     }
-
+    //minimax method that traverses board to find move
     int minimax(final String x[][], final int depth, final boolean isMax) {
         final int score = checkboard();
 
@@ -206,7 +208,7 @@ class createboard {
             return best;
         }
     }
-
+//recursively call minimax to find the best position to play
     int findbestMove(final String[][] y) {
         int bestVal = -1000;
         int play = 0;
@@ -229,6 +231,7 @@ class createboard {
 };
 
 class tictac {
+    //method that plays the game if game is against cpu
     static void playgame() {
         final createboard one = new createboard();
         one.insertNumbers();
@@ -300,7 +303,7 @@ class tictac {
                 break;
             }
             // one.printposition();
-            one.place1O();
+            one.humanpalyer();
             check = one.checkboard();
             if (check == 1) {
                 System.out.println("Cpu wins");
